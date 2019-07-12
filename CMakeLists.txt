@@ -36,20 +36,27 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
-find_package(imgui REQUIRED)
-
+if (WIN32)
+	find_package(imgui REQUIRED)
+endif() #WIN32
 
 file(GLOB_RECURSE SRC "src/*")
 file(GLOB_RECURSE GFX "graphics/*")
 file(GLOB_RECURSE SHD "shaders/*")
 file(GLOB_RECURSE HDR "include/*")
 file(GLOB_RECURSE RES "resources/*")
+if (UNIX)
+	file(GLOB_RECURSE IMG "imgui/*")
+endif() #UNIX
+
 
 list(APPEND SRC ${SHD})
 list(APPEND SRC ${GFX})
 list(APPEND SRC ${HDR})
 list(APPEND SRC ${RES})
-
+if (UNIX)
+	list(APPEND SRC ${IMG})
+endif() #UNIX
 
 ### COPY SHADER FILES TO BUILD AND BINARY LOCATIONS IF THEY HAVE BEEN CHANGED ###
 add_custom_target(
@@ -113,6 +120,7 @@ target_link_libraries( ${PROJECT_NAME}  ${AVCODEC_LIBRARY})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include")
 target_include_directories(${PROJECT_NAME} PUBLIC "graphics")
+target_include_directories(${PROJECT_NAME} PUBLIC "imgui")
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
@@ -121,7 +129,8 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARY})
 target_link_libraries(${PROJECT_NAME} GLEW::GLEW)
 target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} glm)
-target_link_libraries(${PROJECT_NAME} imgui::imgui)
-
+if (WIN32)
+	target_link_libraries(${PROJECT_NAME} imgui::imgui)
+endif() #WIN32
 
 	  
