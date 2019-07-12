@@ -26,9 +26,12 @@ void searchForMedia()
 {
 	imagesFromFile.resize(0);
 
-	cv::String pathImages("d:/data/hysperspectral/snapscan_data_png/*.png");
+	cv::String pathImages("/home/mocat/data/images/*.png");
+
+	std::cout << pathImages << std::endl;
+
 	std::vector<cv::String> fnImages;
-	cv::glob(pathImages, fnImages, true); // recurse
+	cv::glob(pathImages, fnImages, false); // recurse
 	for (size_t k = 0; k<fnImages.size(); ++k)
 	{
 		std::cout << fnImages[k] << std::endl;
@@ -124,8 +127,16 @@ int main(int, char**)
 
 			ImGui::Separator();
 			ImGui::Text("View Options");
-			ImGui::SliderInt("slice", &texLevel, 0, imagesFromFile.size());
-			grender.setLevel(texLevel);
+			ImGui::SliderInt("slice 0", &texLevelRed, 0, imagesFromFile.size());
+			ImGui::SliderInt("slice 1", &texLevelGreen, 0, imagesFromFile.size());
+			ImGui::SliderInt("slice 2", &texLevelBlue, 0, imagesFromFile.size());
+
+			ImGui::SliderFloat("scale 0", &texScaleRed, 0.0f, 50.0f);
+			ImGui::SliderFloat("scale 1", &texScaleGreen, 0.0f, 50.0f);
+			ImGui::SliderFloat("scale 2", &texScaleBlue, 0.0f, 50.0f);
+
+			grender.setLevel(texLevelRed, texLevelGreen, texLevelBlue);
+			grender.setScale(texScaleRed, texScaleGreen, texScaleBlue);
 
 			ImGui::End();
 

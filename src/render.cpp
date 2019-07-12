@@ -57,7 +57,11 @@ void gRender::compileAndLinkShader()
 
 void gRender::setLocations()
 {
-	m_texLevelID = glGetUniformLocation(renderProg.getHandle(), "texLevel");
+	m_texLevelRID = glGetUniformLocation(renderProg.getHandle(), "texLevelR");
+	m_texLevelGID = glGetUniformLocation(renderProg.getHandle(), "texLevelG");
+	m_texLevelBID = glGetUniformLocation(renderProg.getHandle(), "texLevelB");
+
+	m_texScaleID = glGetUniformLocation(renderProg.getHandle(), "scale");
 
 
 }
@@ -167,7 +171,12 @@ void gRender::render()
 
 	//glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &m_fromStandardTextureID);
 	//glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &m_fromDepthID);
-	glUniform1i(m_texLevelID, m_texLevel);
+	glUniform1i(m_texLevelRID, m_texLevelR);
+	glUniform1i(m_texLevelGID, m_texLevelG);
+	glUniform1i(m_texLevelBID, m_texLevelB);
+
+	glUniform4fv(m_texScaleID, 1, glm::value_ptr(m_texScale));
+
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 

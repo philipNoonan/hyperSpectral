@@ -34,7 +34,13 @@ GLFWwindow *window;
 
 gRender grender;
 
-int texLevel = 0;
+int texLevelRed = 0;
+int texLevelGreen = 0;
+int texLevelBlue = 0;
+
+float texScaleRed = 25.0f;
+float texScaleGreen = 25.0f;
+float texScaleBlue = 25.0f;
 
 glm::vec3 frameSize;
 

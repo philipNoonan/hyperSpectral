@@ -8,12 +8,20 @@ in vec2 TexCoord;
 
 layout(location = 0) out vec4 color;
 
-uniform int texLevel;
+uniform int texLevelR;
+uniform int texLevelG;
+uniform int texLevelB;
+
+uniform vec4 scale;
 
 
 void main()
 {
 	ivec3 texSize = textureSize(textureHyperSpectral, 0).xyz;
-	float data = texelFetch(textureHyperSpectral, ivec3(TexCoord.x * texSize.x, TexCoord.y * texSize.y, texLevel), 0).x;
-	color = vec4(data.xxx * 10.0f, 1);
+	float dataRed = texelFetch(textureHyperSpectral, ivec3(TexCoord.x * texSize.x, TexCoord.y * texSize.y, texLevelR), 0).x;
+	float dataGreen = texelFetch(textureHyperSpectral, ivec3(TexCoord.x * texSize.x, TexCoord.y * texSize.y, texLevelG), 0).x;
+	float dataBlue = texelFetch(textureHyperSpectral, ivec3(TexCoord.x * texSize.x, TexCoord.y * texSize.y, texLevelB), 0).x;
+
+	
+	color = vec4(dataRed * scale.x, dataGreen * scale.y, dataBlue * scale.z, 1);
 }

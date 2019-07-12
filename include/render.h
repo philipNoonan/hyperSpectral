@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #define GLFW_INCLUDE_GLU
 #include <GLFW/glfw3.h>
-
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -50,9 +50,16 @@ public:
 	{
 		return m_show_imgui;
 	}
-	void setLevel(int level)
+	void setLevel(int red, int green, int blue)
 	{
-		m_texLevel = level;
+		m_texLevelR = red;
+		m_texLevelG = green;
+		m_texLevelB = blue;
+	}
+
+	void setScale(float redScale, float greenScale, float blueScale)
+	{
+		m_texScale = glm::vec4(redScale, greenScale, blueScale, 1.0f);
 	}
 	GLFWwindow * loadGLFWWindow();
 
@@ -79,7 +86,11 @@ private:
 
 	std::vector<float> m_vertices;
 	std::vector<unsigned int> m_indices;
-	int m_texLevel = 0;
+	int m_texLevelR = 0;
+	int m_texLevelG = 0;
+	int m_texLevelB = 0;
+	glm::vec4 m_texScale = glm::vec4(1.0f);
+
 	glm::vec3 m_frameSize;
 
 	// programs
@@ -95,5 +106,10 @@ private:
 	// buffers
 
 	// uniforms
-	GLuint m_texLevelID;
+	GLuint m_texLevelRID;
+	GLuint m_texLevelGID;
+	GLuint m_texLevelBID;
+
+	GLuint m_texScaleID;
+
 };
