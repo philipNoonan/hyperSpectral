@@ -72,7 +72,7 @@ public:
 	void setBuffers(GLuint quadlist, GLuint quadlistMeanTemp);
 	void setFrameSize(glm::vec3 frameSize);
 	void uploadImages(std::vector<cv::Mat> images);
-
+	void getMeanOfFrame(std::vector<float> &fMeans);
 
 	void render();
 
@@ -80,6 +80,7 @@ public:
 private:
 
 	GLSLProgram renderProg;
+	GLSLProgram sumProg;
 
 	GLFWwindow * m_window;
 	bool m_show_imgui = true;

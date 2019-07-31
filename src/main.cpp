@@ -26,7 +26,8 @@ void searchForMedia()
 {
 	imagesFromFile.resize(0);
 
-	cv::String pathImages("/home/mocat/data/images/*.png");
+	//cv::String pathImages("/home/mocat/data/images/*.png");
+	cv::String pathImages("D://data//hysperspectral//snapscan_data_png//*.png");
 
 	std::cout << pathImages << std::endl;
 
@@ -110,7 +111,9 @@ int main(int, char**)
 			ImGuiWindowFlags window_flags = 0;
 
 			float arr[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-			arr[8] = arr[0];// +arr[1] + arr[2] + arr[3] + arr[4] + arr[5] + arr[6] + arr[7];
+			std::vector<float> plotValues;
+			grender.getMeanOfFrame(plotValues);
+
 			GLint total_mem_kb = 0;
 			glGetIntegerv(GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX,
 				&total_mem_kb);
@@ -121,9 +124,12 @@ int main(int, char**)
 
 			bool showGUI = grender.showImgui();
 			ImGui::Begin("Menu", &showGUI, window_flags);
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", arr[8], 1000.0f / arr[8]);
 			ImGui::Text("GPU Memory Usage %d MB out of %d (%.1f %%)", (total_mem_kb - cur_avail_mem_kb) / 1024, total_mem_kb / 1024, 100.0f * (1.0f - (float)cur_avail_mem_kb / (float)total_mem_kb));
 			ImGui::Separator();
+
+			//ImGui::PushItemWidth(-1);
+			ImGui::PlotHistogram("", plotValues.data(), plotValues.size(), 0, NULL, 0.0f, 0.025f, ImVec2(0, 80));
+			//ImGui::PopItemWidth();
 
 			ImGui::Separator();
 			ImGui::Text("View Options");

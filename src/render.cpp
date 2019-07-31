@@ -48,6 +48,9 @@ void gRender::compileAndLinkShader()
 		renderProg.compileShader("shaders/fragShader.fs");
 		renderProg.link();
 
+		//sumProg.compileShader("shaders/summer.cs");
+		//sumProg.link();
+
 	}
 	catch (GLSLProgramException &e) {
 		std::cerr << e.what() << std::endl;
@@ -94,31 +97,31 @@ void gRender::setVertPositions()
 
 void gRender::allocateTextures()
 {
-
-	m_textureHyperSpectral = GLHelper::createTexture(m_textureHyperSpectral, GL_TEXTURE_2D_ARRAY, 1, m_frameSize.x, m_frameSize.y, m_frameSize.z, GL_R8, GL_NEAREST, GL_NEAREST_MIPMAP_NEAREST);
+	int numberOfLevels = GLHelper::numberOfLevels(m_frameSize);
+	m_textureHyperSpectral = GLHelper::createTexture(m_textureHyperSpectral, GL_TEXTURE_2D_ARRAY, numberOfLevels, m_frameSize.x, m_frameSize.y, m_frameSize.z, GL_R8, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);
 }
 
 void gRender::allocateBuffers()
 {
 	glGenVertexArrays(1, &m_VAO);
-	glGenBuffers(1, &m_VBO);
-	glGenBuffers(1, &m_EBO);
-	glBindVertexArray(m_VAO);
+	//glGenBuffers(1, &m_VBO);
+	//glGenBuffers(1, &m_EBO);
+	//glBindVertexArray(m_VAO);
 
-	// standard verts
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(float), &m_vertices[0], GL_DYNAMIC_DRAW);
-	// EBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_DYNAMIC_DRAW);
-	// Position attribute for Depth
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	//// TexCoord attribute for Depth
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//// standard verts
+	//glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	//glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(float), &m_vertices[0], GL_DYNAMIC_DRAW);
+	//// EBO
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_DYNAMIC_DRAW);
+	//// Position attribute for Depth
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)0);
+	//glEnableVertexAttribArray(0);
+	////// TexCoord attribute for Depth
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
+	//glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }
 
@@ -132,7 +135,7 @@ void gRender::uploadImages(std::vector<cv::Mat> images)
 
 
 
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 
 	//use fast 4-byte alignment (default anyway) if possible
 	glPixelStorei(GL_UNPACK_ALIGNMENT, (images[0].step & 3) ? 1 : 4);
@@ -144,10 +147,36 @@ void gRender::uploadImages(std::vector<cv::Mat> images)
 	{
 		glBindTexture(GL_TEXTURE_2D_ARRAY, m_textureHyperSpectral);
 		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, m_frameSize.x, m_frameSize.y, 1, GL_RED, GL_UNSIGNED_BYTE, images[i].data);
+
 	}
+
+
+
+	//glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+	//glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+
 }
 
+ void gRender::getMeanOfFrame(std::vector<float> &fMeans)
+{
+	 int numberOfLevels = GLHelper::numberOfLevels(m_frameSize);
+	 fMeans.resize(m_frameSize.z);
+	//for (int i = 0; i < m_frameSize.z; i++)
+	//{
+	// std::vector<float> tdata(m_frameSize.z, 1231.321f);
+	 GLenum theError;
+	 theError = glGetError();
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, m_textureHyperSpectral);
+		glGetTexImage(GL_TEXTURE_2D_ARRAY, numberOfLevels - 1, GL_RED, GL_FLOAT, fMeans.data());
+		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+
+		theError = glGetError();
+
+
+	//}
+}
 
 
 

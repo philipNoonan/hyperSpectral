@@ -120,8 +120,9 @@ target_link_libraries( ${PROJECT_NAME}  ${AVCODEC_LIBRARY})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include")
 target_include_directories(${PROJECT_NAME} PUBLIC "graphics")
+if (UNIX)
 target_include_directories(${PROJECT_NAME} PUBLIC "imgui")
-
+endif()
 target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 
