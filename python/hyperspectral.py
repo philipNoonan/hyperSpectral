@@ -157,18 +157,20 @@ def main():
     #print(numberOfImages)	
     height, width = images[0].shape[0:2]
     #img_data = numpy.array(list(image.getdata()), numpy.uint8)
-    #print(xsize)
-    #print(ysize)	
+    print(width)
+    print(height)
+    #print(images[0])
     glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_R8, width, height, numberOfImages)
 	# Allocate the immutable GPU memory storage -more efficient than mutable memory if you are not going to change image size after creation
-    #glPixelStorei(GL_UNPACK_ALIGNMENT, 4);	
-    #glPixelStorei(GL_UNPACK_ROW_LENGTH, xsize);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, width);
 	# fill each image in the array with the same img_data
     for i in range(numberOfImages):
-        #cv2.imshow('image', image*100.0)
-        #cv2.waitKey(1)	
-        #print(i)
+        #cv2.imshow('image', images[i]*1000.0)
+        #cv2.waitKey(0)	
+        #print(images[i].strides)
         img_data = numpy.array(images[i].data, numpy.uint8)		
+        #print(img_data.shape[0:2])
         glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, GL_RED, GL_UNSIGNED_BYTE, img_data)		
     #cv2.destroyAllWindows()
     #print("reached here")
@@ -186,16 +188,21 @@ def main():
         imgui.new_frame()
 
         w, h = glfw.get_framebuffer_size(window)
-        glViewport(0,0,w,h)		
+        glViewport(0,0,int(w/2),h)		
         glClear(GL_COLOR_BUFFER_BIT)
 
         glUniform1i(sliderR_loc, sliderRValue)
         glUniform1i(sliderG_loc, sliderGValue)
-        glUniform1i(sliderB_loc, sliderBValue)
-		
+        glUniform1i(sliderB_loc, 50)
+
+
         #glPolygonMode(GL_FRONT_AND_BACK, GL_LINE );		
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
-		
+
+        glUniform1i(sliderB_loc, sliderBValue)
+        glViewport(int(w/2),0,int(w/2),h)		
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
+
         imgui.begin("My first imgui success!", True)
         changedR, sliderRValue = imgui.slider_int("sliceR", sliderRValue, min_value=0, max_value=numberOfImages)
         changedG, sliderGValue = imgui.slider_int("sliceG", sliderGValue, min_value=0, max_value=numberOfImages)

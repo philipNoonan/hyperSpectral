@@ -27,7 +27,7 @@ void searchForMedia()
 	imagesFromFile.resize(0);
 
 	//cv::String pathImages("/home/mocat/data/images/*.png");
-	cv::String pathImages("D://data//hysperspectral//snapscan_data_png//*.png");
+	cv::String pathImages("D://data//hysperspectral//snapscan_data_crop//*.png");
 
 	std::cout << pathImages << std::endl;
 
